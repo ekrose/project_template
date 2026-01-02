@@ -73,9 +73,11 @@ pyenv allows us to make sure we are consistently using the same version of pytho
 
 Edit ~/.zshrc and add:
 
-`export PYENV_ROOT="$HOME/.pyenv"  
+```
+export PYENV_ROOT="$HOME/.pyenv"  
 export PATH="$PYENV_ROOT/bin:$PATH"  
-eval "$(pyenv init -)"`
+eval "$(pyenv init -)"
+```
 
 Reload:
 
@@ -160,8 +162,10 @@ Run once per machine:
 
 If requirements.txt exists:
 
-`python -m pip install --upgrade pip  
-pip install -r requirements.txt ` 
+```
+python -m pip install --upgrade pip  
+pip install -r requirements.txt
+```
 
 Otherwise, you can install some packages and save the requirements (be sure to update as you add new packages):
 
