@@ -67,6 +67,8 @@ From this point forward, all commands must be run inside WSL, not PowerShell.
 
 ## Section 2 — Configure pyenv (one time)
 
+pyenv allows us to make sure we are consistently using the same version of python. We will install it, and then configure it so that all the code we execute from the project directory uses the specified version of python (3.14.2 in this example).
+
 ### macOS (zsh)
 
 Edit ~/.zshrc and add:
@@ -105,6 +107,8 @@ Verify:
 
 ## Section 3 — Install the project Python version
 
+We now specify the python version we want to use in this project.
+
 From the repository root:
 
 `pyenv install 3.14.2  
@@ -119,6 +123,8 @@ Expected: Python 3.14.2
 ---
 
 ## Section 4 — Create and activate the virtual environment
+
+Finally, we use a venv to manage packages / dependences in thie project.
 
 From the repo root:
 
@@ -136,26 +142,35 @@ The path must include .venv.
 
 ---
 
-## Section 5 — Install Python dependencies
+## Section 5 — Make pip venv safe
+
+You only want use pip to install packages within the project venv. One way to ensure this happens is to require that pip only work inside of a venv.
+
+Run once per machine:
+
+`python -m pip config set global.require-virtualenv true`
+
+---
+
+## Section 6 — Install Python dependencies
 
 If requirements.txt exists:
 
 `python -m pip install --upgrade pip  
 pip install -r requirements.txt ` 
 
----
+Otherwise, you can install some packages and save the requirements (be sure to update as you add new packages):
 
-## Section 6 — Make pip safe (IMPORTANT)
-
-Run once per machine:
-
-`python -m pip config set global.require-virtualenv true`
-
-This will ensure pip will not install any packages outside of the 
+```
+pip install numpy scipy pandas statsmodels matplotlib seaborn
+pip freeze > requirements.txt
+```
 
 ---
 
 ## Section 7 — Global Git hygiene (one time)
+
+There are lots of things that should not be tracked in git. We will make a local .gitignore, but it's useful to have a global one that applies across all our work.
 
 Create `~/.gitignore_global` with:
 
@@ -209,15 +224,15 @@ Verify:
 
 ---
 
-## Section 8 — Data workflow (CRITICAL)
+## Section 8 — Data workflow 
 
-Never commit data files to Git.
+Never commit data files to Git. Large data files live outside the repo, either on your hard drive, on a server, or in Dropbox.
 
-Large data files live outside the repo (e.g. Dropbox).
-
-Data paths are provided via the environment variable:
+To make sure the code can be used by everyone, data paths are provided via the environment variable:
 
 `PROJECT_DATA_DIR`
+
+**Important:** File paths should never be hard coded (only relative paths).
 
 Example in Python:
 
@@ -232,7 +247,9 @@ DATA_DIR = Path(os.environ["PROJECT_DATA_DIR"])
 
 ## Section 9 — direnv setup
 
-Enable direnv in your shell.
+Because paths are defined by an environment variable, it's useful to have these variables available whenever we work on the project. We use `direnv` to accomplish this.
+
+Enable `direnv` in your shell.
 
 macOS (.zshrc):
 
@@ -260,8 +277,6 @@ Verify:
 
 `echo $PROJECT_DATA_DIR`
 
-
-
 ---
 
 ## Section 10 — Daily checklist
@@ -273,3 +288,12 @@ Verify:
 5. Never commit data
 
 ---
+
+## Section 11 — Forking this repo
+
+You may want to fork this repo for each new project. When you do so, ensure that you:
+
+1. Delete `.python-version` and specify the desired python version via `pyenv local 3.X.X`.
+2. Create your environment variable via `cp .envrc.example .envrc` and adjust paths.
+3. Install the virtual environment `python -m venv .venv` and install requirements via pip.
+4. Create and just local `.gitignore` for project-specific files we don't want to commit.
