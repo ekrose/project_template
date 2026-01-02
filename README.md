@@ -77,7 +77,11 @@ eval "$(pyenv init -)"`
 
 Reload:
 
-exec $SHELL
+`exec $SHELL`
+
+Verify:
+
+`pyenv versions`
 
 ---
 
@@ -85,17 +89,17 @@ exec $SHELL
 
 Edit ~/.bashrc and add:
 
-export PYENV_ROOT="$HOME/.pyenv"  
+`export PYENV_ROOT="$HOME/.pyenv"  
 export PATH="$PYENV_ROOT/bin:$PATH"  
-eval "$(pyenv init -)"
+eval "$(pyenv init -)"`
 
 Reload:
 
-source ~/.bashrc
+`source ~/.bashrc`
 
 Verify:
 
-pyenv versions
+`pyenv versions`
 
 ---
 
@@ -103,14 +107,14 @@ pyenv versions
 
 From the repository root:
 
-pyenv install 3.11.7  
-pyenv local 3.11.7  
+`pyenv install 3.14.2  
+pyenv local 3.14.2`
 
 Verify:
 
-python --version  
+`python --version  `
 
-Expected: Python 3.11.7
+Expected: Python 3.14.2
 
 ---
 
@@ -118,15 +122,15 @@ Expected: Python 3.11.7
 
 From the repo root:
 
-python -m venv .venv
+`python -m venv .venv`
 
 Activate (macOS / WSL):
 
-source .venv/bin/activate
+`source .venv/bin/activate`
 
 Verify:
 
-which python  
+`which python`
 
 The path must include .venv.
 
@@ -136,13 +140,8 @@ The path must include .venv.
 
 If requirements.txt exists:
 
-python -m pip install --upgrade pip  
-pip install -r requirements.txt  
-
-If pip-tools is used:
-
-pip install pip-tools  
-pip-sync requirements.txt  
+`python -m pip install --upgrade pip  
+pip install -r requirements.txt ` 
 
 ---
 
@@ -150,38 +149,63 @@ pip-sync requirements.txt
 
 Run once per machine:
 
-python -m pip config set global.require-virtualenv true
+`python -m pip config set global.require-virtualenv true`
 
-Always use:
-
-python -m pip ...
+This will ensure pip will not install any packages outside of the 
 
 ---
 
 ## Section 7 — Global Git hygiene (one time)
 
-Create ~/.gitignore_global with:
+Create `~/.gitignore_global` with:
 
-__pycache__/  
-*.pyc  
-.venv/  
-env/  
+````__pycache__/  
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
 
-*.csv  
-*.parquet  
-*.feather  
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
 
-.DS_Store  
-.vscode/  
-.ipynb_checkpoints/  
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ---- macOS ----
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ---- Editors ----
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+````
 
 Register it:
 
-git config --global core.excludesfile ~/.gitignore_global
+`git config --global core.excludesfile ~/.gitignore_global`
 
 Verify:
 
-git config --global --get core.excludesfile
+`git config --global --get core.excludesfile`
 
 ---
 
@@ -193,14 +217,16 @@ Large data files live outside the repo (e.g. Dropbox).
 
 Data paths are provided via the environment variable:
 
-PROJECT_DATA_DIR
+`PROJECT_DATA_DIR`
 
 Example in Python:
 
+```
 from pathlib import Path  
 import os  
 
 DATA_DIR = Path(os.environ["PROJECT_DATA_DIR"])
+```
 
 ---
 
@@ -210,62 +236,40 @@ Enable direnv in your shell.
 
 macOS (.zshrc):
 
-eval "$(direnv hook zsh)"
+`eval "$(direnv hook zsh)"`
 
 WSL (.bashrc):
 
-eval "$(direnv hook bash)"
+`eval "$(direnv hook bash)"`
 
 Reload your shell.
 
 Create your local .envrc:
 
-cp .envrc.example .envrc
+`cp .envrc.example .envrc`
 
 Edit .envrc and set:
 
-export PROJECT_DATA_DIR=/path/to/your/data
+`export PROJECT_DATA_DIR=/path/to/your/data`
 
 Allow it:
 
-direnv allow
+`direnv allow`
 
 Verify:
 
-echo $PROJECT_DATA_DIR
+`echo $PROJECT_DATA_DIR`
+
+
 
 ---
 
-## Section 10 — Cursor / VS Code interactive workflow
-
-Select interpreter:
-
-Python: Select Interpreter → .venv/bin/python
-
-Use interactive cells in .py files:
-
-# %%
-
-import pandas as pd
-
-# %%
-
-df.head()
-
-Run cells or selections in the Python Interactive Window.
-
-If Shift+Enter runs in the terminal:
-
-Python: Run File in Interactive Window (once)
-
----
-
-## Section 11 — Daily checklist
+## Section 10 — Daily checklist
 
 1. cd into repo
-2. direnv allow (first time)
+2. direnv allow (if first time)
 3. source .venv/bin/activate
-4. Run code via Interactive Window
+4. Run code via Interactive Window in editor of choice (e.g., Cursor)
 5. Never commit data
 
 ---
