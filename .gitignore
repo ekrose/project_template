@@ -1,0 +1,9 @@
+# --- Data ---
+data/
+outputs/
+*.csv
+
+# --- Env ---
+.env
+.envrc
+
