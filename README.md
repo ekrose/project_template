@@ -91,9 +91,11 @@ Verify:
 
 Edit ~/.bashrc and add:
 
-`export PYENV_ROOT="$HOME/.pyenv"  
+```
+export PYENV_ROOT="$HOME/.pyenv" 
 export PATH="$PYENV_ROOT/bin:$PATH"  
 eval "$(pyenv init -)"`
+```
 
 Reload:
 
@@ -111,8 +113,10 @@ We now specify the python version we want to use in this project.
 
 From the repository root:
 
-`pyenv install 3.14.2  
-pyenv local 3.14.2`
+```
+pyenv install 3.14.2
+pyenv local 3.14.2
+```
 
 Verify:
 
